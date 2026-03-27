@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartSpend – Track Spending, Build Better Money Habits</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">SmartSpend</a>
+  <div class="navbar-links">
+    <button class="dark-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+    <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+    <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-bg-blob blob1"></div>
+  <div class="hero-bg-blob blob2"></div>
+  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;width:100%">
+    <div class="hero-content animate-in">
+      <div class="hero-eyebrow">
+        <span>✨</span> Family Finance Made Simple
+      </div>
+      <h1 class="hero-title">
+        Track Spending.<br>
+        <span class="text-gradient">Build Better</span><br>
+        Money Habits.
+      </h1>
+      <p class="hero-desc">
+        SmartSpend helps parents monitor their children's daily spending, send financial tips, and guide them toward smarter financial decisions — in real time.
+      </p>
+      <div class="hero-buttons">
+        <a href="signup.html" class="btn btn-primary">Get Started Free →</a>
+        <a href="login.html" class="btn btn-outline">Login</a>
+        <button class="btn btn-ghost" id="tryDemoBtn">⚡ Try Demo</button>
+      </div>
+    </div>
+
+    <!-- Floating Preview Cards -->
+    <div class="hero-visual" style="display:flex;flex-direction:column;gap:1rem">
+      <div class="floating-card fc1" style="max-width:300px">
+        <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem">Today's Spending</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">₹450</div>
+        <div style="margin:0.75rem 0 0.4rem;font-size:0.8rem;color:var(--text-muted)">Daily Limit: ₹500</div>
+        <div class="progress-wrap"><div class="progress-bar" style="width:90%"></div></div>
+        <div style="margin-top:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+          <span class="badge badge-blue">🍔 Food ₹200</span>
+          <span class="badge badge-pink">🚌 Transport ₹150</span>
+          <span class="badge badge-green">🍿 Snacks ₹100</span>
+        </div>
+      </div>
+      <div class="floating-card fc2" style="max-width:280px;margin-left:auto">
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem">
+          <span style="font-size:1.2rem">💡</span>
+          <span style="font-size:0.78rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.06em">Parent Tip</span>
+        </div>
+        <p style="font-size:0.88rem;color:var(--text);margin:0">"Try to reduce daily snack expenses and save for your laptop goal! 💪"</p>
+        <div style="margin-top:0.5rem;font-size:0.72rem;color:var(--text-muted)">From Mom · Today</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="section" style="background:var(--white)">
+  <div class="container text-center">
+    <div class="hero-eyebrow" style="margin:0 auto 1rem">🚀 Features</div>
+    <h2>Everything you need for <span class="text-gradient">smart family spending</span></h2>
+    <p style="max-width:520px;margin:1rem auto 0">A complete toolkit for parents and kids to build healthy money habits together.</p>
+
+    <div class="features-grid">
+      <div class="feature-card animate-in">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Real-Time Tracking</div>
+        <p class="feature-desc">Kids log every transaction. Parents see it all instantly with beautiful spending breakdowns.</p>
+      </div>
+      <div class="feature-card animate-in">
+        <div class="feature-icon">⚠️</div>
+        <div class="feature-title">Overspending Alerts</div>
+        <p class="feature-desc">Automatic alerts when daily spending crosses the ₹500 limit — keep budgets on track.</p>
+      </div>
+      <div class="feature-card animate-in">
+        <div class="feature-icon">💡</div>
+        <div class="feature-title">Parent Tips</div>
+        <p class="feature-desc">Parents send personalized financial tips that appear directly in the child's dashboard.</p>
+      </div>
+      <div class="feature-card animate-in">
+        <div class="feature-icon">📈</div>
+        <div class="feature-title">Spending Insights</div>
+        <p class="feature-desc">Visual pie charts and weekly bar charts reveal spending patterns across categories.</p>
+      </div>
+      <div class="feature-card animate-in">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Goal Saving</div>
+        <p class="feature-desc">Set saving goals (like a new phone!) and track progress toward financial milestones.</p>
+      </div>
+      <div class="feature-card animate-in">
+        <div class="feature-icon">🌙</div>
+        <div class="feature-title">Dark Mode</div>
+        <p class="feature-desc">Comfortable for late-night budget reviews with a beautiful dark theme toggle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="section" style="background:var(--grad-soft)">
+  <div class="container text-center">
+    <h2>How it <span class="text-gradient">works</span></h2>
+    <p style="margin-top:0.5rem">Three simple steps to better money habits</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3rem">
+      <div class="card text-center">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1.3rem;margin:0 auto 1rem">1</div>
+        <h3>Sign Up</h3>
+        <p style="font-size:0.9rem;margin-top:0.5rem">Child and parent both create accounts with their respective roles.</p>
+      </div>
+      <div class="card text-center">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1.3rem;margin:0 auto 1rem">2</div>
+        <h3>Log Spending</h3>
+        <p style="font-size:0.9rem;margin-top:0.5rem">Child records daily transactions — food, transport, snacks, games.</p>
+      </div>
+      <div class="card text-center">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1.3rem;margin:0 auto 1rem">3</div>
+        <h3>Parent Monitors</h3>
+        <p style="font-size:0.9rem;margin-top:0.5rem">Parent views reports, gets overspend alerts, and sends money tips.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Start Building Better Money Habits Today</h2>
+    <p>Free to use. No credit card required. Just good financial habits.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="signup.html" class="btn" style="background:white;color:var(--blue);font-weight:700">Create Free Account →</a>
+      <a href="login.html" class="btn" style="background:rgba(255,255,255,0.15);color:white;border:2px solid rgba(255,255,255,0.4)">Login</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>© 2025 SmartSpend — Track Spending. Build Better Money Habits.</p>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+  SS.initTheme();
+
+  const toggle = document.getElementById('themeToggle');
+  toggle.addEventListener('click', () => {
+    const dark = SS.toggleTheme();
+    toggle.textContent = dark ? '☀️' : '🌙';
+  });
+  if (document.body.classList.contains('dark')) toggle.textContent = '☀️';
+
+  document.getElementById('tryDemoBtn').addEventListener('click', () => {
+    SS.loadDemoData();
+    // Log in as a demo child user
+    SS.loginUser('Demo Kid', 'child');
+    window.location.href = 'child-dashboard.html';
+  });
+</script>
+</body>
+</html>
