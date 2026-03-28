@@ -34,10 +34,12 @@
 /* Dark mode */
 body.dark {
   --off-white: #0F1120;
+  --white: #1a1d35;
   --card-bg: rgba(30,35,60,0.90);
   --text: #E8EAFF;
   --text-muted: #9CA3AF;
   --shadow: 0 8px 32px rgba(0,0,0,0.35);
+  --shadow-hover: 0 16px 48px rgba(0,0,0,0.45);
   --grad-soft: linear-gradient(135deg, #1a2060 0%, #3d1040 100%);
   background: #0F1120 !important;
 }
@@ -424,6 +426,7 @@ body.dark .tip-card { background: linear-gradient(135deg, rgba(59,91,219,0.15), 
   backdrop-filter: blur(16px);
   position: relative;
 }
+body.dark .floating-card { border-color: rgba(116,143,252,0.15); }
 .floating-card.fc1 { animation: float 6s ease-in-out infinite; }
 .floating-card.fc2 { animation: float 8s ease-in-out infinite reverse; margin-top: 1.5rem; }
 

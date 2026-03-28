@@ -151,21 +151,42 @@
   <p>© 2025 SmartSpend — Track Spending. Build Better Money Habits.</p>
 </footer>
 
-<script src="js/app.js"></script>
 <script>
-  SS.initTheme();
+  // ── Theme Management ──────────────────────────────────────────
+  const THEME_KEY = 'ss_theme';
+
+  function initTheme() {
+    if (localStorage.getItem(THEME_KEY) === 'dark') {
+      document.body.classList.add('dark');
+      return true;
+    }
+    return false;
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+    return isDark;
+  }
+
+  // Apply saved theme immediately
+  const isDark = initTheme();
 
   const toggle = document.getElementById('themeToggle');
+  toggle.textContent = isDark ? '☀️' : '🌙';
+
   toggle.addEventListener('click', () => {
-    const dark = SS.toggleTheme();
+    const dark = toggleTheme();
     toggle.textContent = dark ? '☀️' : '🌙';
   });
-  if (document.body.classList.contains('dark')) toggle.textContent = '☀️';
 
+  // ── Demo Button ───────────────────────────────────────────────
   document.getElementById('tryDemoBtn').addEventListener('click', () => {
-    SS.loadDemoData();
-    // Log in as a demo child user
-    SS.loginUser('Demo Kid', 'child');
+    // Store demo flag for dashboard pages to pick up
+    sessionStorage.setItem('demo_mode', 'true');
+    sessionStorage.setItem('demo_name', 'Demo Kid');
+    sessionStorage.setItem('demo_role', 'child');
     window.location.href = 'child-dashboard.html';
   });
 </script>
