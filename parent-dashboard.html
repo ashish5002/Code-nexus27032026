@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parent Dashboard – SmartSpend</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-brand">SmartSpend</a>
+    <span class="sidebar-section-label">Monitor</span>
+    <a href="#" class="sidebar-link active" onclick="showSection('overview',this)">
+      <span class="icon">📊</span> Overview
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('transactions',this)">
+      <span class="icon">📋</span> All Transactions
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('analytics',this)">
+      <span class="icon">📈</span> Analytics
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('tips',this)">
+      <span class="icon">💡</span> Send Tips
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('weekly',this)">
+      <span class="icon">🗓️</span> Weekly Report
+    </a>
+    <div class="sidebar-footer">
+      <hr class="divider" />
+      <button class="dark-toggle" id="themeToggle" style="width:100%;border-radius:10px;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.9rem;font-size:0.9rem;font-weight:500;color:var(--text-muted)">
+        🌙 Dark Mode
+      </button>
+      <button class="sidebar-link" id="logoutBtn" style="width:100%;cursor:pointer;border:none;background:none;color:var(--danger);font-family:inherit;text-align:left">
+        <span class="icon">🚪</span> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h2 id="welcomeMsg">Parent Dashboard 👨‍👩‍👧</h2>
+          <p id="dateLabel" style="font-size:0.9rem"></p>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:center">
+          <span class="role-pill role-parent">👨‍👩‍👧 Parent</span>
+          <button class="btn btn-ghost btn-sm" id="demoBtn">⚡ Load Demo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overspend Banner -->
+    <div id="overspendBanner" style="display:none" class="alert alert-danger overspend">
+      ⚠️ <strong>Child Overspending Alert!</strong> Daily limit of ₹500 has been exceeded today.
+    </div>
+
+    <!-- SECTION: Overview -->
+    <section id="sec-overview">
+      <div class="stats-grid">
+        <div class="stat-card animate-in">
+          <div class="stat-icon">💸</div>
+          <div class="stat-value" id="statToday">₹0</div>
+          <div class="stat-label">Child Spent Today</div>
+        </div>
+        <div class="stat-card animate-in">
+          <div class="stat-icon">📋</div>
+          <div class="stat-value" id="statCount">0</div>
+          <div class="stat-label">Today's Transactions</div>
+        </div>
+        <div class="stat-card animate-in">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value" id="statAllTime">₹0</div>
+          <div class="stat-label">Total Spending</div>
+        </div>
+        <div class="stat-card animate-in">
+          <div class="stat-icon">💡</div>
+          <div class="stat-value" id="statTips">0</div>
+          <div class="stat-label">Tips Sent</div>
+        </div>
+      </div>
+
+      <!-- Daily progress -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+          <div>
+            <div style="font-weight:700;font-size:0.95rem">Child's Daily Budget Usage</div>
+            <div style="font-size:0.82rem;color:var(--text-muted)">Daily limit: ₹500</div>
+          </div>
+          <div id="limitPct" style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.3rem">0%</div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-bar" id="limitBar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Top spending categories today -->
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-bottom:1rem">Today's Category Breakdown</h3>
+          <div id="todayCatLegend"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:1rem">Recent Activity</h3>
+          <div class="transaction-list" id="recentTxns"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: All Transactions -->
+    <section id="sec-transactions" style="display:none">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem">
+          <h3>📋 All Child Transactions</h3>
+          <select id="filterCat" class="btn btn-ghost btn-sm" style="border:none;cursor:pointer">
+            <option value="">All Categories</option>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Games">Games</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="transaction-list" id="allTxnsList"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: Analytics -->
+    <section id="sec-analytics" style="display:none">
+      <div class="grid-2" style="margin-bottom:1.5rem">
+        <div class="card">
+          <h3 style="margin-bottom:1rem">Overall Category Breakdown</h3>
+          <div class="pie-wrap" id="pieChart"></div>
+          <div id="catLegend" style="margin-top:1rem"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:1rem">Spending by Category</h3>
+          <div id="catBars"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Send Tips -->
+    <section id="sec-tips" style="display:none">
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-bottom:1.2rem">💌 Send a Financial Tip</h3>
+          <div id="tipAlert"></div>
+          <div class="form-group">
+            <label>Your Tip</label>
+            <textarea id="tipInput" placeholder="e.g. Try reducing snack expenses. Save for your goal!" rows="4" style="resize:vertical"></textarea>
+          </div>
+          <!-- Quick tips -->
+          <div style="margin-bottom:1rem">
+            <div class="section-title">Quick Tips</div>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+              <button class="btn btn-ghost btn-sm quick-tip">🍿 Cut snack spending</button>
+              <button class="btn btn-ghost btn-sm quick-tip">💰 Save 20% daily</button>
+              <button class="btn btn-ghost btn-sm quick-tip">🎯 Stay on budget</button>
+              <button class="btn btn-ghost btn-sm quick-tip">🚌 Use public transport</button>
+              <button class="btn btn-ghost btn-sm quick-tip">📚 Avoid impulse buying</button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" id="sendTipBtn">Send Tip 💌</button>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:1rem">📨 Tips Sent</h3>
+          <div id="sentTipsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Weekly Report -->
+    <section id="sec-weekly" style="display:none">
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3 style="margin-bottom:1rem">🗓️ Weekly Spending Report</h3>
+        <div id="weekChart"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:1rem">📊 This Week Summary</h3>
+        <div id="weekSummary"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Mobile Nav -->
+<nav class="mobile-nav">
+  <a href="#" class="mobile-nav-item active" onclick="showSection('overview',this)"><span class="icon">📊</span>Overview</a>
+  <a href="#" class="mobile-nav-item" onclick="showSection('transactions',this)"><span class="icon">📋</span>Txns</a>
+  <a href="#" class="mobile-nav-item" onclick="showSection('analytics',this)"><span class="icon">📈</span>Stats</a>
+  <a href="#" class="mobile-nav-item" onclick="showSection('tips',this)"><span class="icon">💡</span>Tips</a>
+  <a href="#" class="mobile-nav-item" onclick="showSection('weekly',this)"><span class="icon">🗓️</span>Weekly</a>
+</nav>
+
+
+<script type="module">
+  import { 
+    requireAuth, logoutUser, initTheme, toggleTheme, getTransactions, getTodayTransactions, 
+    calculateTotals, checkOverspending, DAILY_LIMIT, setProgress, formatAmount, 
+    displayTransactions, buildPieChart, buildCategoryLegend, buildWeekChart, 
+    getTips, addParentTip, deleteTip, loadDemoData, CATEGORY_ICONS, CATEGORY_COLORS 
+  } from './js/app.js';
+
+  initTheme();
+
+  // Guard: protect route and get user
+  requireAuth((user) => {
+    document.getElementById('welcomeMsg').textContent = `Welcome, ${user.name}! 👨‍👩‍👧`;
+    document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    renderOverview();
+  });
+
+  // Attach Global Listeners
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    const dark = toggleTheme();
+    this.innerHTML = (dark ? '☀️' : '🌙') + ' Dark Mode';
+  });
+  
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault(); logoutUser();
+  });
+
+  // Section navigation
+  const sections = ['overview', 'transactions', 'analytics', 'tips', 'weekly'];
+  window.showSection = function(name, el) {
+    sections.forEach(s => { document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none'; });
+    document.querySelectorAll('.sidebar-link, .mobile-nav-item').forEach(l => l.classList.remove('active'));
+    if (el) el.classList.add('active');
+    
+    if (name === 'analytics') renderAnalytics();
+    if (name === 'tips') renderTips();
+    if (name === 'weekly') renderWeekly();
+    if (name === 'transactions') renderAllTxns();
+  };
+
+  async function renderOverview() {
+    const todayTxns = await getTodayTransactions();
+    const allTxns = await getTransactions();
+    const tips = await getTips();
+    const todayTotals = calculateTotals(todayTxns);
+    const allTotals = calculateTotals(allTxns);
+
+    document.getElementById('statToday').textContent = formatAmount(todayTotals.total);
+    document.getElementById('statCount').textContent = todayTxns.length;
+    document.getElementById('statAllTime').textContent = formatAmount(allTotals.total);
+    document.getElementById('statTips').textContent = tips.length;
+
+    const pct = Math.min(Math.round((todayTotals.total / DAILY_LIMIT) * 100), 100);
+    document.getElementById('limitPct').textContent = pct + '%';
+    setProgress('limitBar', todayTotals.total, DAILY_LIMIT);
+
+    const over = checkOverspending(todayTotals.total);
+    document.getElementById('overspendBanner').style.display = over ? 'flex' : 'none';
+
+    buildCategoryLegend(todayTotals.byCategory, todayTotals.total, 'todayCatLegend');
+    displayTransactions('recentTxns', allTxns.slice(0, 5), false);
+  }
+
+  async function renderAllTxns() {
+    const cat = document.getElementById('filterCat').value;
+    let txns = await getTransactions();
+    if (cat) txns = txns.filter(t => t.category === cat);
+    displayTransactions('allTxnsList', txns, false);
+  }
+
+  async function renderAnalytics() {
+    const txns = await getTransactions();
+    const { total, byCategory } = calculateTotals(txns);
+    buildPieChart(byCategory, total, 'pieChart');
+    buildCategoryLegend(byCategory, total, 'catLegend');
+
+    const barsEl = document.getElementById('catBars');
+    const entries = Object.entries(byCategory).sort((a,b) => b[1]-a[1]);
+    if (!entries.length) { barsEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem">No data yet.</p>'; return; }
+    const max = entries[0][1];
+    barsEl.innerHTML = entries.map(([cat, val]) => {
+      const pct = Math.round((val / max) * 100);
+      const color = CATEGORY_COLORS[cat] || '#aaa';
+      return `<div style="margin-bottom:0.9rem">
+        <div style="display:flex;justify-content:space-between;font-size:0.88rem;margin-bottom:0.3rem">
+          <span>${CATEGORY_ICONS[cat] || ''} ${cat}</span>
+          <span style="font-weight:600">${formatAmount(val)}</span>
+        </div>
+        <div class="progress-wrap"><div style="height:100%;width:${pct}%;background:${color};border-radius:50px;transition:width 0.6s ease"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  async function renderTips() {
+    const tips = await getTips();
+    import('./js/app.js').then(app => {
+      app.showTips('sentTipsList', tips, true);
+      document.querySelectorAll('.delete-tip-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          await deleteTip(e.target.dataset.id);
+          renderTips(); renderOverview();
+        });
+      });
+    });
+  }
+
+  async function renderWeekly() {
+    const txns = await getTransactions();
+    buildWeekChart(txns, 'weekChart');
+    
+    // Weekly summary
+    const data = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const label = d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+      const dayTxns = txns.filter(t => new Date(t.date).toDateString() === d.toDateString());
+      data.push({ label, total: dayTxns.reduce((s, t) => s + t.amount, 0), txnCount: dayTxns.length });
+    }
+    const el = document.getElementById('weekSummary');
+    const total = data.reduce((s, d) => s + d.total, 0);
+    const overDays = data.filter(d => d.total > DAILY_LIMIT).length;
+    el.innerHTML = `
+      <div class="stats-grid" style="margin-bottom:1.5rem">
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value">${formatAmount(total)}</div><div class="stat-label">7-Day Total</div></div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value">${formatAmount(Math.round(total/7))}</div><div class="stat-label">Daily Average</div></div>
+        <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value">${overDays}</div><div class="stat-label">Days Over Limit</div></div>
+      </div>
+      <div class="transaction-list">
+        ${data.map(d => `<div class="txn-card"><div class="txn-left"><div class="txn-icon">${d.total > DAILY_LIMIT ? '⚠️' : '✅'}</div><div><div class="txn-category">${d.label}</div><div class="txn-date">${d.txnCount} transactions</div></div></div><div class="txn-amount" style="color:${d.total > DAILY_LIMIT ? 'var(--danger)' : 'var(--blue)'}">${formatAmount(d.total)}</div></div>`).join('')}
+      </div>`;
+  }
+
+  // Event Listeners
+  if (document.getElementById('filterCat')) {
+    document.getElementById('filterCat').addEventListener('change', renderAllTxns);
+  }
+
+  document.getElementById('sendTipBtn').addEventListener('click', async () => {
+    const text = document.getElementById('tipInput').value.trim();
+    const alertEl = document.getElementById('tipAlert');
+    alertEl.innerHTML = '<div class="alert alert-info">Sending...</div>';
+    
+    const res = await addParentTip(text);
+    if (res.ok) {
+      alertEl.innerHTML = '<div class="alert alert-success">✅ Tip sent to child!</div>';
+      document.getElementById('tipInput').value = '';
+      renderTips(); renderOverview();
+      setTimeout(() => alertEl.innerHTML = '', 3000);
+    } else {
+      alertEl.innerHTML = `<div class="alert alert-danger">${res.msg}</div>`;
+    }
+  });
+
+  document.querySelectorAll('.quick-tip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('tipInput').value = btn.textContent.trim().replace(/^[^\s]+\s/, '');
+    });
+  });
+
+  document.getElementById('demoBtn').addEventListener('click', async () => {
+    await loadDemoData();
+    renderOverview();
+    alert("Demo data loaded from Firebase!");
+  });
+</script>
+</body>
+</html>

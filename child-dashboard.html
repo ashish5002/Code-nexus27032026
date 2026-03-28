@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Child Dashboard – SmartSpend</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-brand">SmartSpend</a>
+    <span class="sidebar-section-label">Menu</span>
+    <a href="#overview" class="sidebar-link active" onclick="showSection('overview',this)">
+      <span class="icon">📊</span> Overview
+    </a>
+    <a href="#add" class="sidebar-link" onclick="showSection('add',this)">
+      <span class="icon">➕</span> Add Spending
+    </a>
+    <a href="#history" class="sidebar-link" onclick="showSection('history',this)">
+      <span class="icon">📋</span> History
+    </a>
+    <a href="#analytics" class="sidebar-link" onclick="showSection('analytics',this)">
+      <span class="icon">📈</span> Analytics
+    </a>
+    <a href="#tips" class="sidebar-link" onclick="showSection('tips',this)">
+      <span class="icon">💡</span> Parent Tips
+    </a>
+    <a href="#goal" class="sidebar-link" onclick="showSection('goal',this)">
+      <span class="icon">🎯</span> My Goal
+    </a>
+    <div class="sidebar-footer">
+      <hr class="divider" />
+      <button class="dark-toggle" id="themeToggle" title="Toggle dark mode" style="width:100%;border-radius:10px;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.9rem;font-size:0.9rem;font-weight:500;color:var(--text-muted)">
+        🌙 Dark Mode
+      </button>
+      <button class="sidebar-link" id="logoutBtn" style="width:100%;cursor:pointer;border:none;background:none;color:var(--danger);font-family:inherit;text-align:left">
+        <span class="icon">🚪</span> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h2 id="welcomeMsg">Hello! 👋</h2>
+          <p id="dateLabel" style="font-size:0.9rem"></p>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:center">
+          <span class="role-pill role-child">👦 Child</span>
+          <button class="btn btn-ghost btn-sm" id="demoBtn">⚡ Load Demo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overspend Alert -->
+    <div id="overspendAlert" style="display:none" class="alert alert-danger overspend">
+      ⚠️ <strong>Overspending Alert!</strong> You've crossed your daily limit of ₹500.
+    </div>
+
+    <!-- SECTION: Overview -->
+    <section id="sec-overview">
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card animate-in">
+          <div class="stat-icon">💸</div>
+          <div class="stat-value" id="statToday">₹0</div>
+          <div class="stat-label">Spent Today</div>
+        </div>
+        <div class="stat-card animate-in">
+          <div class="stat-icon">📋</div>
+          <div class="stat-value" id="statTxnCount">0</div>
+          <div class="stat-label">Today's Transactions</div>
+        </div>
+        <div class="stat-card animate-in">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value" id="statTotal">₹0</div>
+          <div class="stat-label">Total Spent</div>
+        </div>
+        <div class="stat-card animate-in">
+          <div class="stat-icon">🏦</div>
+          <div class="stat-value" id="statRemaining">₹500</div>
+          <div class="stat-label">Remaining Today</div>
+        </div>
+      </div>
+
+      <!-- Daily limit progress -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+          <div>
+            <div style="font-weight:700;font-size:0.95rem">Daily Budget</div>
+            <div style="font-size:0.82rem;color:var(--text-muted)">Limit: ₹500 / day</div>
+          </div>
+          <div id="limitPct" style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.3rem">0%</div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-bar" id="limitBar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Recent transactions -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h3>Recent Transactions</h3>
+          <a href="#history" onclick="showSection('history')" style="font-size:0.85rem;color:var(--blue);text-decoration:none;font-weight:600">View all →</a>
+        </div>
+        <div class="transaction-list" id="recentTxns"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: Add Spending -->
+    <section id="sec-add" style="display:none">
+      <div class="card" style="max-width:480px">
+        <h3 style="margin-bottom:1.2rem">➕ Add New Transaction</h3>
+        <div id="addAlert"></div>
+        <div class="form-group">
+          <label>Amount (₹)</label>
+          <input type="number" id="amountInput" placeholder="e.g. 150" min="1" />
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="categoryInput">
+            <option value="">Select category…</option>
+            <option value="Food">🍔 Food</option>
+            <option value="Transport">🚌 Transport</option>
+            <option value="Shopping">🛍️ Shopping</option>
+            <option value="Snacks">🍿 Snacks</option>
+            <option value="Games">🎮 Games</option>
+            <option value="Other">💡 Other</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-full" id="addTxnBtn">Add Transaction</button>
+      </div>
+    </section>
+
+    <!-- SECTION: History -->
+    <section id="sec-history" style="display:none">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem">
+          <h3>📋 All Transactions</h3>
+          <div style="display:flex;gap:0.6rem">
+            <select id="filterCat" class="btn btn-ghost btn-sm" style="border:none;cursor:pointer">
+              <option value="">All Categories</option>
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Snacks">Snacks</option>
+              <option value="Games">Games</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="transaction-list" id="allTxns"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: Analytics -->
+    <section id="sec-analytics" style="display:none">
+      <div class="grid-2" style="margin-bottom:1.5rem">
+        <!-- Pie Chart -->
+        <div class="card">
+          <h3 style="margin-bottom:1rem">Spending Breakdown</h3>
+          <div class="pie-wrap" id="pieChart"></div>
+          <div id="catLegend" style="margin-top:1rem"></div>
+        </div>
+        <!-- Weekly Chart -->
+        <div class="card">
+          <h3 style="margin-bottom:1rem">Weekly Overview</h3>
+          <div id="weekChart"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Tips -->
+    <section id="sec-tips" style="display:none">
+      <div class="card">
+        <h3 style="margin-bottom:1rem">💡 Tips from Parent</h3>
+        <div id="tipsList"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: Goal -->
+    <section id="sec-goal" style="display:none">
+
+      <!-- Top row: Goal progress + Savings pot -->
+      <div class="grid-2" style="margin-bottom:1.5rem">
+
+        <!-- Card 1: Goal target + progress ring -->
+        <div class="card goal-card" style="display:flex;flex-direction:column;align-items:center;text-align:center">
+          <h3 style="margin-bottom:1rem;align-self:flex-start">🎯 My Goal</h3>
+
+          <div id="goalEmpty" style="padding:2rem 1rem;color:var(--text-muted)">
+            <div style="font-size:3rem;margin-bottom:0.75rem">🎯</div>
+            <p style="font-weight:600;margin-bottom:0.4rem">No goal set yet</p>
+            <p style="font-size:0.85rem">Use the form below to set your savings goal!</p>
+          </div>
+
+          <div id="goalDisplay" style="display:none;width:100%">
+            <!-- SVG ring -->
+            <div style="position:relative;width:150px;height:150px;margin:0 auto 1rem">
+              <svg width="150" height="150" style="transform:rotate(-90deg)">
+                <circle cx="75" cy="75" r="62" fill="none" stroke="var(--border)" stroke-width="11"/>
+                <circle id="goalRing" cx="75" cy="75" r="62" fill="none" stroke="var(--blue)" stroke-width="11"
+                  stroke-linecap="round" stroke-dasharray="389.55" stroke-dashoffset="389.55"
+                  style="transition:stroke-dashoffset 0.8s ease,stroke 0.4s"/>
+              </svg>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                <div id="goalPct" style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;line-height:1">0%</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px">of goal</div>
+              </div>
+            </div>
+
+            <div id="goalName" style="font-size:1.1rem;font-weight:700;margin-bottom:0.6rem"></div>
+
+            <!-- Saved vs Target row -->
+            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--grad-soft);border-radius:10px;padding:0.7rem 1rem;margin-bottom:0.6rem">
+              <div style="text-align:left">
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:2px">💰 Net Savings</div>
+                <div id="goalSavedAmt" style="font-weight:700;font-size:1.05rem;color:#10B981"></div>
+              </div>
+              <div style="color:var(--text-muted)">→</div>
+              <div style="text-align:right">
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:2px">🎯 Target</div>
+                <div id="goalTargetAmt" style="font-weight:700;font-size:1.05rem"></div>
+              </div>
+            </div>
+
+            <div id="goalRemaining" style="font-size:0.84rem;color:var(--text-muted);margin-bottom:0.9rem"></div>
+
+            <!-- Milestone badges -->
+            <div style="display:flex;gap:0.4rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem" id="milestoneBadges"></div>
+
+            <!-- Achieved banner -->
+            <div id="goalAchieved" style="display:none;background:linear-gradient(135deg,#10B981,#059669);color:white;border-radius:12px;padding:0.85rem;font-weight:700;font-size:0.95rem;margin-bottom:0.9rem">
+              🎉 Goal Achieved! Congratulations!
+            </div>
+
+            <button class="btn btn-ghost btn-sm" id="deleteGoalBtn" style="color:var(--danger);width:100%">🗑️ Delete Goal</button>
+          </div>
+        </div>
+
+        <!-- Card 2: Savings pot — the separate savings variable -->
+        <div class="card" style="display:flex;flex-direction:column">
+          <h3 style="margin-bottom:0.3rem">💰 My Savings Pot</h3>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem">
+            Each day you stay under your ₹500 limit, the leftover is added here. Overspending deducts from it.
+          </p>
+
+          <!-- Big savings number -->
+          <div style="background:linear-gradient(135deg,#10B981,#059669);border-radius:14px;padding:1.4rem;text-align:center;margin-bottom:1rem;color:white">
+            <div style="font-size:0.82rem;opacity:0.85;margin-bottom:0.3rem">Total Net Savings</div>
+            <div id="savingsPotAmt" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900">₹0</div>
+          </div>
+
+          <!-- Breakdown row: saved vs penalty -->
+          <div style="display:flex;gap:0.75rem;margin-bottom:1rem">
+            <div style="flex:1;background:var(--grad-soft);border-radius:10px;padding:0.8rem;text-align:center">
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.25rem">✅ Days Saved</div>
+              <div id="savingsTotalSaved" style="font-weight:700;font-size:1rem;color:#10B981">₹0</div>
+            </div>
+            <div style="flex:1;background:var(--grad-soft);border-radius:10px;padding:0.8rem;text-align:center">
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.25rem">⚠️ Overspend Lost</div>
+              <div id="savingsPenalty" style="font-weight:700;font-size:1rem;color:var(--danger)">₹0</div>
+            </div>
+          </div>
+
+          <!-- Daily savings log -->
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.6rem;color:var(--text-muted)">DAILY BREAKDOWN</div>
+          <div id="dailySavingsLog" style="flex:1;overflow-y:auto;max-height:220px"></div>
+        </div>
+      </div>
+
+      <!-- Bottom: Set / Edit Goal form -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap">
+          <h3 id="goalFormTitle" style="margin:0">Set a Goal</h3>
+          <div style="font-size:0.82rem;color:var(--text-muted)">— Give your savings a purpose</div>
+        </div>
+        <div id="goalAlert"></div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:180px">
+            <label>Goal Name</label>
+            <input type="text" id="goalNameInput" placeholder="e.g. New Bicycle, Laptop, Trip…" />
+          </div>
+          <div class="form-group" style="flex:1;min-width:140px">
+            <label>Target Amount (₹)</label>
+            <input type="number" id="goalTargetInput" placeholder="e.g. 5000" min="1" />
+          </div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:0.1rem">
+            <button class="btn btn-primary" id="setGoalBtn">🎯 Save Goal</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- Mobile Nav -->
+<nav class="mobile-nav">
+  <a href="#" class="mobile-nav-item active" onclick="showSection('overview',this)"><span class="icon">📊</span>Home</a>
+  <a href="#" class="mobile-nav-item" onclick="showSection('add',this)"><span class="icon">➕</span>Add</a>
+  <a href="#" class="mobile-nav-item" onclick="showSection('history',this)"><span class="icon">📋</span>History</a>
+  <a href="#" class="mobile-nav-item" onclick="showSection('analytics',this)"><span class="icon">📈</span>Stats</a>
+  <a href="#" class="mobile-nav-item" onclick="showSection('tips',this)"><span class="icon">💡</span>Tips</a>
+</nav>
+
+
+<script type="module">
+  import { 
+    requireAuth, logoutUser, initTheme, toggleTheme, getTransactions, getTodayTransactions, 
+    calculateTotals, checkOverspending, DAILY_LIMIT, setProgress, formatAmount, 
+    displayTransactions, buildPieChart, buildCategoryLegend, buildWeekChart, 
+    addTransaction, deleteTransaction, getTips, getGoal, setGoal, deleteGoal, calculateSavings, loadDemoData 
+  } from './js/app.js';
+
+  initTheme();
+
+  // Guard: protect route and get user
+  requireAuth((user) => {
+    document.getElementById('welcomeMsg').textContent = `Hello, ${user.name}! 👋`;
+    document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    
+    // Initial Data Load
+    renderOverview();
+    renderTips();
+  });
+
+  // Attach Global Listeners
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    const dark = toggleTheme();
+    this.innerHTML = (dark ? '☀️' : '🌙') + ' Dark Mode';
+  });
+  
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault(); logoutUser();
+  });
+
+  // Section navigation
+  const sections = ['overview', 'add', 'history', 'analytics', 'tips', 'goal'];
+  window.showSection = function(name, el) {
+    sections.forEach(s => { document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none'; });
+    document.querySelectorAll('.sidebar-link, .mobile-nav-item').forEach(l => l.classList.remove('active'));
+    if (el) el.classList.add('active');
+    
+    // Load fresh data when opening sections
+    if (name === 'analytics') renderAnalytics();
+    if (name === 'tips') renderTips();
+    if (name === 'history') renderHistory();
+    if (name === 'goal') renderGoal();
+  };
+
+  // Render Functions (Now Async!)
+  async function renderOverview() {
+    const todayTxns = await getTodayTransactions();
+    const allTxns = await getTransactions();
+    const todayTotals = calculateTotals(todayTxns);
+    const allTotals = calculateTotals(allTxns);
+
+    document.getElementById('statToday').textContent = formatAmount(todayTotals.total);
+    document.getElementById('statTxnCount').textContent = todayTxns.length;
+    document.getElementById('statTotal').textContent = formatAmount(allTotals.total);
+    document.getElementById('statRemaining').textContent = formatAmount(Math.max(0, DAILY_LIMIT - todayTotals.total));
+
+    const pct = Math.min(Math.round((todayTotals.total / DAILY_LIMIT) * 100), 100);
+    document.getElementById('limitPct').textContent = pct + '%';
+    setProgress('limitBar', todayTotals.total, DAILY_LIMIT);
+
+    const over = checkOverspending(todayTotals.total);
+    document.getElementById('overspendAlert').style.display = over ? 'flex' : 'none';
+
+    displayTransactions('recentTxns', allTxns.slice(0, 4), false);
+  }
+
+  async function renderHistory() {
+    const cat = document.getElementById('filterCat').value;
+    let txns = await getTransactions();
+    if (cat) txns = txns.filter(t => t.category === cat);
+    displayTransactions('allTxns', txns, true);
+    
+    // Attach delete listeners dynamically
+    document.querySelectorAll('.delete-txn-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        await deleteTransaction(e.target.dataset.id);
+        renderHistory(); renderOverview();
+      });
+    });
+  }
+
+  async function renderAnalytics() {
+    const txns = await getTransactions();
+    const { total, byCategory } = calculateTotals(txns);
+    buildPieChart(byCategory, total, 'pieChart');
+    buildCategoryLegend(byCategory, total, 'catLegend');
+    buildWeekChart(txns, 'weekChart');
+  }
+
+  async function renderTips() {
+    const tips = await getTips();
+    import('./js/app.js').then(app => app.showTips('tipsList', tips, false));
+  }
+
+  async function renderGoal() {
+    const [allTxns, g] = await Promise.all([getTransactions(), getGoal()]);
+
+    // ── SAVINGS POT (always visible, no goal needed) ──
+    const { netSavings, totalSaved, totalPenalty, dailyBreakdown } = calculateSavings(allTxns);
+
+    document.getElementById('savingsPotAmt').textContent    = formatAmount(netSavings);
+    document.getElementById('savingsTotalSaved').textContent = formatAmount(totalSaved);
+    document.getElementById('savingsPenalty').textContent    = formatAmount(totalPenalty);
+
+    // Daily breakdown log — sorted newest first
+    const logEl = document.getElementById('dailySavingsLog');
+    if (!dailyBreakdown.length) {
+      logEl.innerHTML = `<div style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:1rem">No spending days yet. Start tracking to see your savings!</div>`;
+    } else {
+      const sorted = [...dailyBreakdown].sort((a, b) => new Date(b.day) - new Date(a.day));
+      logEl.innerHTML = sorted.map(d => {
+        const date = new Date(d.day);
+        const label = date.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+        const isToday = d.day === new Date().toDateString();
+        const saved  = d.leftover > 0;
+        const over   = d.overspend > 0;
+
+        return `<div style="display:flex;align-items:center;gap:0.7rem;padding:0.55rem 0.7rem;border-radius:10px;
+            margin-bottom:0.4rem;background:var(--grad-soft);border-left:3px solid ${over ? 'var(--danger)' : '#10B981'}">
+          <div style="font-size:1.1rem">${over ? '⚠️' : '✅'}</div>
+          <div style="flex:1">
+            <div style="font-size:0.82rem;font-weight:600">${label}${isToday ? ' <span style="color:var(--blue);font-size:0.75rem">(Today)</span>' : ''}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Spent ${formatAmount(d.spent)} of ₹500</div>
+          </div>
+          <div style="text-align:right">
+            ${saved ? `<div style="font-size:0.85rem;font-weight:700;color:#10B981">+${formatAmount(d.leftover)}</div>` : ''}
+            ${over  ? `<div style="font-size:0.85rem;font-weight:700;color:var(--danger)">−${formatAmount(d.overspend)}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── GOAL CARD ──
+    if (g) {
+      document.getElementById('goalDisplay').style.display = 'block';
+      document.getElementById('goalEmpty').style.display   = 'none';
+      document.getElementById('goalFormTitle').textContent = '✏️ Edit Goal';
+
+      // Progress = netSavings toward goal target
+      const rawPct = netSavings / g.target * 100;
+      const pct    = Math.min(Math.round(rawPct), 100);
+
+      // SVG ring — circumference = 2π×62 ≈ 389.55
+      const circumference = 389.55;
+      const offset = circumference - (Math.min(rawPct, 100) / 100) * circumference;
+      const ring = document.getElementById('goalRing');
+      ring.style.strokeDashoffset = offset;
+      ring.style.stroke = rawPct >= 100 ? '#10B981' : rawPct >= 75 ? '#F59E0B' : 'var(--blue)';
+
+      document.getElementById('goalPct').textContent      = pct + '%';
+      document.getElementById('goalName').textContent     = '🎯 ' + g.name;
+      document.getElementById('goalSavedAmt').textContent = formatAmount(netSavings);
+      document.getElementById('goalTargetAmt').textContent = formatAmount(g.target);
+
+      const remaining = g.target - netSavings;
+      const remEl = document.getElementById('goalRemaining');
+      if (remaining <= 0) {
+        remEl.innerHTML = `<span style="color:#10B981;font-weight:600">✅ You've reached your target!</span>`;
+      } else {
+        remEl.textContent = `${formatAmount(Math.ceil(remaining))} more needed`;
+      }
+
+      // Milestones
+      const milestones = [25, 50, 75, 100];
+      document.getElementById('milestoneBadges').innerHTML = milestones.map(m => {
+        const reached = rawPct >= m;
+        return `<span style="padding:0.28rem 0.65rem;border-radius:20px;font-size:0.76rem;font-weight:600;
+          background:${reached ? (m === 100 ? '#10B981' : 'var(--blue)') : 'var(--border)'};
+          color:${reached ? 'white' : 'var(--text-muted)'}">
+          ${reached ? '✓ ' : ''}${m}%</span>`;
+      }).join('');
+
+      document.getElementById('goalAchieved').style.display = rawPct >= 100 ? 'block' : 'none';
+
+      // Pre-fill edit form
+      document.getElementById('goalNameInput').value   = g.name;
+      document.getElementById('goalTargetInput').value = g.target;
+    } else {
+      document.getElementById('goalDisplay').style.display = 'none';
+      document.getElementById('goalEmpty').style.display   = 'block';
+      document.getElementById('goalFormTitle').textContent = 'Set a Goal';
+      document.getElementById('goalNameInput').value   = '';
+      document.getElementById('goalTargetInput').value = '';
+    }
+  }
+
+  // Form Handlers
+  document.getElementById('addTxnBtn').addEventListener('click', async () => {
+    const amount   = document.getElementById('amountInput').value;
+    const category = document.getElementById('categoryInput').value;
+    const alertEl  = document.getElementById('addAlert');
+    alertEl.innerHTML = '<div class="alert alert-info">Saving...</div>';
+
+    const res = await addTransaction(amount, category);
+    if (res.ok) {
+      alertEl.innerHTML = `<div class="alert alert-success">✅ Added ${formatAmount(res.txn.amount)} – ${res.txn.category}</div>`;
+      document.getElementById('amountInput').value   = '';
+      document.getElementById('categoryInput').value = '';
+      renderOverview();
+      setTimeout(() => { alertEl.innerHTML = ''; }, 3000);
+    } else {
+      alertEl.innerHTML = `<div class="alert alert-danger">${res.msg}</div>`;
+    }
+  });
+
+  document.getElementById('setGoalBtn').addEventListener('click', async () => {
+    const name    = document.getElementById('goalNameInput').value.trim();
+    const target  = document.getElementById('goalTargetInput').value;
+    const alertEl = document.getElementById('goalAlert');
+
+    if (!name)                         { alertEl.innerHTML = '<div class="alert alert-danger">Please enter a goal name.</div>';           return; }
+    if (!target || parseFloat(target) <= 0) { alertEl.innerHTML = '<div class="alert alert-danger">Please enter a valid target amount.</div>'; return; }
+
+    alertEl.innerHTML = '<div class="alert alert-info">Saving…</div>';
+    await setGoal(name, target);
+    alertEl.innerHTML = '<div class="alert alert-success">🎯 Goal saved! Your savings are automatically tracked.</div>';
+    renderGoal();
+    setTimeout(() => { alertEl.innerHTML = ''; }, 4000);
+  });
+
+  document.addEventListener('click', async (e) => {
+    if (e.target && e.target.id === 'deleteGoalBtn') {
+      if (!confirm('Delete this goal? Your savings pot will not be affected.')) return;
+      await deleteGoal();
+      renderGoal();
+    }
+  });
+
+  document.getElementById('filterCat').addEventListener('change', renderHistory);
+
+  document.getElementById('demoBtn').addEventListener('click', async () => {
+    await loadDemoData();
+    renderOverview();
+    alert("Demo data loaded from Firebase!");
+  });
+</script>
+</body>
+</html>
