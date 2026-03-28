@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up – SmartSpend</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="auth-wrapper">
+  <div class="auth-left">
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.08);bottom:-60px;right:-60px"></div>
+    <div style="position:relative;z-index:2;text-align:center;max-width:340px">
+      <a href="index.html" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:white;text-decoration:none;display:block;margin-bottom:1.5rem">SmartSpend</a>
+      <h2 style="font-size:1.6rem;margin-bottom:1rem">Join SmartSpend ✨</h2>
+      <p>Start your journey to smarter money habits — takes less than 30 seconds.</p>
+      <div style="margin-top:3rem">
+        <div style="background:rgba(255,255,255,0.15);border-radius:16px;padding:1.5rem">
+          <div style="font-size:2.5rem;margin-bottom:0.75rem">💰</div>
+          <blockquote style="color:rgba(255,255,255,0.9);font-style:italic;font-size:0.95rem;line-height:1.6">"Financial literacy starts with awareness. SmartSpend makes tracking effortless for families."</blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-box">
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:0.4rem;color:var(--text-muted);text-decoration:none;font-size:0.88rem;margin-bottom:2rem">← Back to home</a>
+      <h2>Create your account</h2>
+      <p class="subtitle">Select your role and sign in with Google.</p>
+      <div id="alertBox"></div>
+
+      <div class="form-group">
+        <label>I am a…</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.25rem">
+          <div class="role-card-opt" data-role="child"
+            style="border:2px solid rgba(59,91,219,0.2);border-radius:12px;padding:1.1rem;text-align:center;transition:all 0.25s;cursor:pointer">
+            <div style="font-size:1.8rem">👦</div>
+            <div style="font-weight:700;margin-top:0.4rem">Child</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Log my spending</div>
+          </div>
+          <div class="role-card-opt" data-role="parent"
+            style="border:2px solid rgba(59,91,219,0.2);border-radius:12px;padding:1.1rem;text-align:center;transition:all 0.25s;cursor:pointer">
+            <div style="font-size:1.8rem">👨‍👩‍👧</div>
+            <div style="font-weight:700;margin-top:0.4rem">Parent</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Monitor & guide</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="signupBtn" style="margin-top:0.5rem">
+        Sign up with Google 🚀
+      </button>
+
+      <hr class="divider" style="margin:1.5rem 0" />
+      <p style="text-align:center;font-size:0.88rem">
+        Already have an account? <a href="login.html" style="color:var(--blue);font-weight:600;text-decoration:none">Login here</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- FIX: Removed duplicate <script src="js/app.js"> — only one module script -->
+<script type="module">
+  import { initTheme, loginWithGoogle } from './js/app.js';
+  initTheme();
+
+  let selectedRole = null;
+
+  document.querySelectorAll('.role-card-opt').forEach(card => {
+    card.addEventListener('click', () => {
+      selectedRole = card.dataset.role;
+      document.querySelectorAll('.role-card-opt').forEach(c => {
+        c.style.borderColor = 'rgba(59,91,219,0.2)';
+        c.style.background = '';
+      });
+      card.style.borderColor = 'var(--blue)';
+      card.style.background = 'var(--grad-soft)';
+    });
+  });
+
+  function showAlert(msg, type = 'danger') {
+    document.getElementById('alertBox').innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  }
+
+  document.getElementById('signupBtn').addEventListener('click', async () => {
+    if (!selectedRole) { showAlert('Please select your role first.'); return; }
+    const btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.textContent = 'Opening Google Sign-In…';
+    const res = await loginWithGoogle(selectedRole);
+    if (res.ok) {
+      window.location.href = res.role === 'child' ? 'child-dashboard.html' : 'parent-dashboard.html';
+    } else {
+      showAlert(res.msg);
+      btn.disabled = false;
+      btn.textContent = 'Sign up with Google 🚀';
+    }
+  });
+</script>
+</body>
+</html>
